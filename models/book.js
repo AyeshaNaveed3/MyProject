@@ -10,7 +10,7 @@ const Book = sequelize.define('Book', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-  /*  categoryId: {
+  categoryId: {
         type: DataTypes.INTEGER,
         references: {
             model: 'categories',
@@ -23,7 +23,7 @@ const Book = sequelize.define('Book', {
             model: 'publishers', 
             key: 'id' 
         }
-    },*/
+    },
    
 });
 
