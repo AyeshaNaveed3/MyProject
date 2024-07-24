@@ -13,23 +13,10 @@ exports.get = async (req, res) => {
     res.json(users);
 };
 
-
-
-
 exports.create = async (req, res) => {
-    console.log('Received request to create author:', req.body);
-    try {
-        const { name } = req.body;
-        if (!name) {
-            return res.status(400).json({ message: 'Name is required' });
-        }
-        const author = await Author.create({ name });
-        console.log('Author created:', author);
-        res.status(201).json(author);
-    } catch (error) {
-        console.error('Error creating author:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+    const {name } = req.body;
+    const author = await Author.create({ name });
+    res.json(author);
 };
 
 
