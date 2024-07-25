@@ -1,7 +1,19 @@
-const { Reservation } = require('../models/connection'); // Ensure the path is correct
+const { Reservation } = require('../models/connection');
+const { Member, Book } = require('../models/connection')
 
 exports.get = async (req, res) => {
-    const reservations = await Reservation.findAll();
+    //All Reservations with the Books Reserved and the Members Who Reserved Them
+    const reservations = await Reservation.findAll({
+        include: [{
+            model: Book,
+            attributes: ['title'],
+        }, {
+            model: Member,
+            attributes: ['name'],
+        }
+        ]
+
+    });
     res.json(reservations);
 };
 

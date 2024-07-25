@@ -1,20 +1,43 @@
 const Author = require('../models/author');
+const { Book, Category } = require('../models/connection');
 
 exports.get = async (req, res) => {
     const { name, id } = req.query;
-    const queryconditions = {};
+    const queryConditions = {};
+    
     if (name) {
-        queryconditions.name = name;
+        queryConditions.name = name;
     }
+    
     if (id) {
-        queryconditions.id = id;
+        queryConditions.id = id;
     }
-    const users = await Author.findAll({ where: queryconditions });
-    res.json(users);
+    
+    try {
+        const authors = await Author.findAll({
+            where: queryConditions,
+            include: [
+                {
+                    model: Book,
+                    attributes: ['title'],
+                    include: [
+                        {
+                            model: Category,
+                            attributes: ['name'],
+                        }
+                    ]
+                },
+            ]
+        });
+        
+        res.json(authors);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 exports.create = async (req, res) => {
-    const {name } = req.body;
+    const { name } = req.body;
     const author = await Author.create({ name });
     res.json(author);
 };

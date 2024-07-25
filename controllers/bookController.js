@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { Book } = require('../models/connection'); 
+const { Book,Author, Publisher, Category, Review,Member } = require('../models/connection');
 
 
 exports.get = async (req, res) => {
@@ -12,11 +12,32 @@ exports.get = async (req, res) => {
 
     if (title) {
         queryConditions.title = {
-            [Op.like]: `%${title}%` 
+            [Op.like]: `%${title}%`
         };
     }
+// Books with Their Reviews and Reviewers
+    const books = await Book.findAll({
+        where: queryConditions,
+        include: [{
+            model: Review,
+            attributes: ['comments'],
+            include: [
+                {
 
-    const books = await Book.findAll({ where: queryConditions });
+                    model: Member,
+                    attributes: ['name']
+
+                }
+            ]
+        },
+
+        ]
+
+
+    });
+
+
+
     res.json(books);
 };
 

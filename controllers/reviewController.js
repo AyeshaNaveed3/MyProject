@@ -1,12 +1,13 @@
 const { Op } = require('sequelize')
 const Review = require('../models/review');
+const { Book, Member } = require('../models/connection');
 
 exports.get = async (req, res) => {
     const { comments, rating, memberId, bookId } = req.query;
     const queryconditions = {};
     if (comments) {
-        queryconditions.comments ={
-            [Op.like]:  `%${comments}%`
+        queryconditions.comments = {
+            [Op.like]: `%${comments}%`
         };
     }
     if (rating) {
@@ -18,7 +19,18 @@ exports.get = async (req, res) => {
     if (bookId) {
         queryconditions.bookId = bookId;
     }
-    const review = await Review.findAll({ where: queryconditions });
+    const review = await Review.findAll({
+        where: queryconditions,
+        include: [{
+            model: Member,
+            attributes: ['name'],
+        },
+        {
+            model: Book,
+            attributes: ['title'],
+        }]
+
+    });
     res.json(review);
 };
 

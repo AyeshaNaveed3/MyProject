@@ -1,7 +1,24 @@
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middlewares/verifyToken');
 const Member = require('../models/member');
+const {Reservation,Book}=require('../models/connection');
 require('dotenv').config();
+
+exports.get = async (req, res) => {
+    const members = await Member.findAll({
+
+        include:[{
+            model:Reservation,
+            attributes:['reservationDate'],
+            include:[{
+                model:Book,
+                attributes:['title'],
+            }]
+        }]
+    });
+    res.json(members);
+};
+
 
 exports.login=async(req,res)=>{
 
